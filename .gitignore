@@ -1,0 +1,46 @@
+# Binaries
+device-monitor
+device-monitor-*
+*.exe
+
+# Go
+vendor/
+*.test
+*.out
+go.work
+
+# Frontend
+web/node_modules/
+web/dist/
+web/.vite/
+*.log
+
+# Database
+database/*.db
+database/*.db-journal
+database/*.db.backup
+
+# Environment
+.env
+.env.local
+.env.production
+
+# IDE
+.idea/
+.vscode/
+*.swp
+*.swo
+*~
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Logs
+logs/
+*.log
+
+# Test coverage
+coverage/
+*.cover
+*.coverprofile
