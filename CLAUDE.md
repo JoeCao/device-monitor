@@ -19,7 +19,7 @@ make dev
 # Run backend only
 go run main.go
 
-# Run frontend only  
+# Run frontend only
 cd web && npm run dev
 ```
 
