@@ -91,6 +91,10 @@
 - Go 1.21+
 - Node.js 18+（仅开发时需要）
 - Make（可选）
+- **CGO 支持**（必需，SQLite 驱动依赖）
+  - macOS/Linux: 默认支持
+  - Windows: 需要安装 GCC（推荐使用 MinGW-w64 或 TDM-GCC）
+  - 编译时需要设置 `CGO_ENABLED=1`（Makefile 已配置）
 
 ### 安装依赖
 
@@ -130,13 +134,14 @@ cd web && npm run dev
 go run main.go
 ```
 
-- 前端访问: http://localhost:5173
-- 后端 API: http://localhost:3000
+**访问地址**: http://localhost:3000
+
+开发模式下，Go 后端会自动代理非 API 请求到 Vite 开发服务器（5173 端口），因此只需要访问 3000 端口即可，无需直接访问 5173。
 
 ### 生产构建
 
 ```bash
-# 构建生产版本
+# 构建生产版本（会自动先构建前端）
 make build
 
 # 运行生产版本
@@ -145,6 +150,11 @@ make run
 # 或直接运行二进制文件
 NODE_ENV=production ./device-monitor
 ```
+
+**重要提示**:
+- 构建时会自动设置 `CGO_ENABLED=1`（Makefile 已配置）
+- 前端文件会被嵌入到二进制文件中，部署时只需要一个可执行文件
+- 生产模式下访问 http://localhost:3000 即可使用完整应用（前端+API）
 
 ## API 兼容性
 
@@ -175,18 +185,24 @@ NODE_ENV=production ./device-monitor
 4. **启动速度快**: 秒级启动，无需加载大量模块
 5. **跨平台编译**: 可在任意平台编译目标平台的二进制文件
 
-## 构建不同平台
+## 跨平台构建
 
 ```bash
-# Linux
+# Linux x86_64（推荐使用 Docker，避免 CGO 交叉编译问题）
 make build-linux
 
 # macOS
 make build-darwin
 
-# Windows
+# Windows（需要 MinGW-w64 或 TDM-GCC）
 make build-windows
 ```
+
+**注意**: 由于 SQLite 需要 CGO，跨平台编译比较复杂：
+- **推荐方式**: 使用 Docker 进行 Linux 构建（`make build-linux-docker`）
+- **替代方案**: 安装目标平台的交叉编译工具链
+  - macOS → Linux: `brew install FiloSottile/musl-cross/musl-cross`
+  - macOS → Linux (使用 zig): `brew install zig`
 
 ## 项目结构
 
